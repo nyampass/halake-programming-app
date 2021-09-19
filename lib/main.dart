@@ -20,7 +20,7 @@ const String kNavigationExamplePage = '''
 The navigation delegate is set to block navigation to the youtube website.
 </p>
 <ul>
-<ul><a href="https://m-shinoda.github.io/P5Play/?veriosn=7cf203d9429a4c1411a8bf2d38d32cf99fafb13b">https://m-shinoda.github.io/P5Play/?veriosn=7cf203d9429a4c1411a8bf2d38d32cf99fafb13b</a></ul>
+<ul><a href="https://m-shinoda.github.io/P5Play/">https://m-shinoda.github.io/P5Play/</a></ul>
 <ul><a href="https://www.google.com/">https://www.google.com/</a></ul>
 </ul>
 </body>
@@ -57,7 +57,7 @@ class _WebViewExampleState extends State<WebViewExample> {
       // to allow calling Scaffold.of(context) so we can show a snackbar.
       body: Builder(builder: (BuildContext context) {
         return WebView(
-          initialUrl: 'https://flutter.dev',
+          initialUrl: 'https://fee6-60-73-90-183.ngrok.io',
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
