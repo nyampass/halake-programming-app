@@ -46,11 +46,20 @@ class _WebViewExampleState extends State<WebViewExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter WebView example'),
+        title: const Text(''),
         // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
         actions: <Widget>[
-          NavigationControls(_controller.future),
-          SampleMenu(_controller.future),
+          SizedBox(
+              width: 200,
+              child: TextField(
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter a search term'),
+                onChanged: (value) {
+                  url = value;
+                },
+              )),
+          NavigationControls(_controller.future)
         ],
       ),
       // We're using a Builder here so we have a context that is below the Scaffold
@@ -346,6 +355,13 @@ class NavigationControls extends StatelessWidget {
                       controller.reload();
                     },
             ),
+            IconButton(
+                onPressed: !webViewReady
+                    ? null
+                    : () {
+                        controller.loadUrl(url);
+                      },
+                icon: const Icon(Icons.play_arrow))
           ],
         );
       },
