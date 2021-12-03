@@ -1,13 +1,5 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// ignore_for_file: public_member_api_docs
-
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -32,56 +24,25 @@ class _WebViewExampleState extends State<WebViewExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
-        actions: <Widget>[
-          SizedBox(
-              width: 200,
-              child: TextField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter a search term'),
-                onChanged: (value) {
-                  url = value;
-                },
-              )),
-          NavigationControls(_controller.future)
-        ],
-      ),
-      // We're using a Builder here so we have a context that is below the Scaffold
-      // to allow calling Scaffold.of(context) so we can show a snackbar.
-      body: Builder(builder: (BuildContext context) {
-        return WebView(
-          initialUrl: 'https://halake.com',
-          javascriptMode: JavascriptMode.unrestricted,
-          onWebViewCreated: (WebViewController webViewController) {
-            _controller.complete(webViewController);
-          },
-          onProgress: (int progress) {
-            print("WebView is loading (progress : $progress%)");
-          },
-          javascriptChannels: <JavascriptChannel>{
-            _toasterJavascriptChannel(context),
-          },
-          navigationDelegate: (NavigationRequest request) {
-            if (request.url.startsWith('https://halake.com')) {
-              print('blocking navigation to $request}');
-              return NavigationDecision.prevent;
-            }
-            print('allowing navigation to $request');
-            return NavigationDecision.navigate;
-          },
-          onPageStarted: (String url) {
-            print('Page started loading: $url');
-          },
-          onPageFinished: (String url) {
-            print('Page finished loading: $url');
-          },
-          gestureNavigationEnabled: true,
-        );
-      }),
+    return WebView(
+      initialUrl: 'http://192.168.3.8:8000',
+      javascriptMode: JavascriptMode.unrestricted,
+      onWebViewCreated: (WebViewController webViewController) {
+        _controller.complete(webViewController);
+      },
+      javascriptChannels: <JavascriptChannel>{
+        _toasterJavascriptChannel(context),
+      },
+      navigationDelegate: (NavigationRequest request) {
+        return NavigationDecision.navigate;
+      },
+      onPageStarted: (String url) {
+        print('Page started loading: $url');
+      },
+      onPageFinished: (String url) {
+        print('Page finished loading: $url');
+      },
+      gestureNavigationEnabled: true,
     );
   }
 
@@ -98,8 +59,7 @@ class _WebViewExampleState extends State<WebViewExample> {
 }
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture)
-      : assert(_webViewControllerFuture != null);
+  const NavigationControls(this._webViewControllerFuture);
 
   final Future<WebViewController> _webViewControllerFuture;
 
@@ -111,7 +71,8 @@ class NavigationControls extends StatelessWidget {
           (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
         final bool webViewReady =
             snapshot.connectionState == ConnectionState.done;
-        final WebViewController controller = snapshot.data!;
+        final controller = snapshot.data;
+
         return Row(
           children: <Widget>[
             IconButton(
@@ -119,7 +80,7 @@ class NavigationControls extends StatelessWidget {
               onPressed: !webViewReady
                   ? null
                   : () async {
-                      if (await controller.canGoBack()) {
+                      if (controller != null && await controller.canGoBack()) {
                         await controller.goBack();
                       } else {
                         // ignore: deprecated_member_use
@@ -135,7 +96,7 @@ class NavigationControls extends StatelessWidget {
               onPressed: !webViewReady
                   ? null
                   : () async {
-                      if (await controller.canGoForward()) {
+                      if (await controller!.canGoForward()) {
                         await controller.goForward();
                       } else {
                         // ignore: deprecated_member_use
@@ -152,14 +113,14 @@ class NavigationControls extends StatelessWidget {
               onPressed: !webViewReady
                   ? null
                   : () {
-                      controller.reload();
+                      controller?.reload();
                     },
             ),
             IconButton(
                 onPressed: !webViewReady
                     ? null
                     : () {
-                        controller.loadUrl(url);
+                        controller?.loadUrl(url);
                       },
                 icon: const Icon(Icons.play_arrow))
           ],
