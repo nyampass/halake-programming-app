@@ -43,31 +43,29 @@ class _WebViewExampleState extends State<WebViewExample> {
           return Scaffold(
               backgroundColor: Colors.black,
               body: GestureDetector(
-                  onHorizontalDragUpdate: (updateDetails) {},
                   child: Stack(children: [
-                    WebView(
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _webViewController = webViewController;
-                          _controller.complete(webViewController);
-                        },
-                        navigationDelegate: (NavigationRequest request) {
-                          return NavigationDecision.navigate;
-                        },
-                        gestureNavigationEnabled: false,
-                        onPageFinished: (_) {
-                          // ignore: deprecated_member_use
-                          _webViewController.evaluateJavascript(
-                              'document.addEventListener("contextmenu", event => event.preventDefault());');
-                        }),
-                    Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Container(
-                          child: NavigationControls(
-                              snapshot.data!, _controller.future),
-                        ))
-                  ])));
+                WebView(
+                    javascriptMode: JavascriptMode.unrestricted,
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _webViewController = webViewController;
+                      _controller.complete(webViewController);
+                    },
+                    navigationDelegate: (NavigationRequest request) {
+                      return NavigationDecision.navigate;
+                    },
+                    gestureNavigationEnabled: false,
+                    onPageFinished: (_) {
+                      // ignore: deprecated_member_use
+                      _webViewController.evaluateJavascript(
+                          'document.addEventListener("contextmenu", event => event.preventDefault());');
+                    }),
+                Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      child: NavigationControls(
+                          snapshot.data!, _controller.future),
+                    ))
+              ])));
         });
   }
 }
